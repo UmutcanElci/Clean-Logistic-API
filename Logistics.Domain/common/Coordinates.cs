@@ -5,6 +5,7 @@ public class Coordinates
 
     public Coordinates(double latitude, double longitude)
     {
+        // Need to learn the logic of latitude and longitude
         Latitude = latitude;
         Longitude = longitude;
     }
