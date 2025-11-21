@@ -5,11 +5,19 @@ public class Order
     public required string MailAddress { get; set; }
     public required string PhoneNumber { get; set; }
 
-    public StorageType ProductRequestType { get; set; }
-    public int AmountOfProductAsKg { get; set; } // this two fields can be change not be sure about it
 
-
-    // Then this can't be required - also need a mapper for handle what customer gonna input and what not  - we can't handle the functions in here I believe
     public required Location PickUpLocation { get; set; }
     public required Location DestinationLocation { get; set; }
+
+    public required ICollection<OrderItem> OrderItems { get; set; }
+
+    public OrderStatus Status { get; private set; }
+
+    public void Confirm()
+    {
+        if (Status == OrderStatus.Pending)
+        {
+            Status = OrderStatus.Confirmed; // Confirmed ? 
+        }
+    }
 }
