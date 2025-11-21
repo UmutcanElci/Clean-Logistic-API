@@ -1,0 +1,12 @@
+/home/umutcan/Work/LogisticC-/Logistics.Application/bin/Debug/net10.0/Logistics.Application.deps.json
+/home/umutcan/Work/LogisticC-/Logistics.Application/bin/Debug/net10.0/Logistics.Application.dll
+/home/umutcan/Work/LogisticC-/Logistics.Application/bin/Debug/net10.0/Logistics.Application.pdb
+/home/umutcan/Work/LogisticC-/Logistics.Application/obj/Debug/net10.0/Logistics.Application.GeneratedMSBuildEditorConfig.editorconfig
+/home/umutcan/Work/LogisticC-/Logistics.Application/obj/Debug/net10.0/Logistics.Application.AssemblyInfoInputs.cache
+/home/umutcan/Work/LogisticC-/Logistics.Application/obj/Debug/net10.0/Logistics.Application.AssemblyInfo.cs
+/home/umutcan/Work/LogisticC-/Logistics.Application/obj/Debug/net10.0/Logistics.Application.csproj.CoreCompileInputs.cache
+/home/umutcan/Work/LogisticC-/Logistics.Application/obj/Debug/net10.0/Logistics.Application.sourcelink.json
+/home/umutcan/Work/LogisticC-/Logistics.Application/obj/Debug/net10.0/Logistics.Application.dll
+/home/umutcan/Work/LogisticC-/Logistics.Application/obj/Debug/net10.0/refint/Logistics.Application.dll
+/home/umutcan/Work/LogisticC-/Logistics.Application/obj/Debug/net10.0/Logistics.Application.pdb
+/home/umutcan/Work/LogisticC-/Logistics.Application/obj/Debug/net10.0/ref/Logistics.Application.dll
