@@ -8,13 +8,16 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 
+var DbPassword = builder.Configuration["Database:Password"];
+var connectionTemplate = builder.Configuration.GetConnectionString("DefaultConnection");
+
+var correctedTemplate = connectionTemplate.Replace("_DB_PASSWORD_", DbPassword);
 builder.Services.AddDbContext<LogisticsDbContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql(correctedTemplate);
 });
 
 var app = builder.Build();
-var DbPassword = builder.Configuration["Database:Password"];
 
 
 
