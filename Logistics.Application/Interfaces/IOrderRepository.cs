@@ -1,3 +1,7 @@
+namespace Logistics.Application.Interfaces;
+
+using Logistics.Domain;
+
 public interface IOrderRepository
 {
     Task<Order> CreateAsync(Order order);

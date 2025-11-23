@@ -10,3 +10,7 @@
 /home/umutcan/Work/LogisticC-/Logistics.Application/obj/Debug/net10.0/refint/Logistics.Application.dll
 /home/umutcan/Work/LogisticC-/Logistics.Application/obj/Debug/net10.0/Logistics.Application.pdb
 /home/umutcan/Work/LogisticC-/Logistics.Application/obj/Debug/net10.0/ref/Logistics.Application.dll
+/home/umutcan/Work/LogisticC-/Logistics.Application/obj/Debug/net10.0/Logistics.Application.csproj.AssemblyReference.cache
+/home/umutcan/Work/LogisticC-/Logistics.Application/bin/Debug/net10.0/Logistics.Domain.dll
+/home/umutcan/Work/LogisticC-/Logistics.Application/bin/Debug/net10.0/Logistics.Domain.pdb
+/home/umutcan/Work/LogisticC-/Logistics.Application/obj/Debug/net10.0/Logistic.475C1419.Up2Date

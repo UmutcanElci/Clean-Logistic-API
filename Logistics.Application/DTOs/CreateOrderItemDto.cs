@@ -1,6 +1,6 @@
-namespace Logistics.Domain.common;
+namespace Logistics.Application.DTOs;
 
-public class OrderItem
+public class CreateOrderItemDto
 {
     public required string Description { get; set; }
     public required double WeightInKg { get; set; }

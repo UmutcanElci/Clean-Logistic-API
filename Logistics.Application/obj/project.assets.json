@@ -1,11 +1,30 @@
 {
   "version": 3,
   "targets": {
-    "net10.0": {}
+    "net10.0": {
+      "Logistics.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/Logistics.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Logistics.Domain.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "Logistics.Domain/1.0.0": {
+      "type": "project",
+      "path": "../Logistics.Domain/Logistics.Domain.csproj",
+      "msbuildProject": "../Logistics.Domain/Logistics.Domain.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net10.0": []
+    "net10.0": [
+      "Logistics.Domain >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "/home/umutcan/.nuget/packages/": {}
@@ -31,7 +50,11 @@
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "/home/umutcan/Work/LogisticC-/Logistics.Domain/Logistics.Domain.csproj": {
+              "projectPath": "/home/umutcan/Work/LogisticC-/Logistics.Domain/Logistics.Domain.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

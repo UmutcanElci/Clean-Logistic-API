@@ -812,6 +812,19 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
+      "Logistics.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "dependencies": {
+          "Logistics.Domain": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Logistics.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Logistics.Application.dll": {}
+        }
+      },
       "Logistics.Domain/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v10.0",
@@ -2501,6 +2514,11 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "Logistics.Application/1.0.0": {
+      "type": "project",
+      "path": "../Logistics.Application/Logistics.Application.csproj",
+      "msbuildProject": "../Logistics.Application/Logistics.Application.csproj"
+    },
     "Logistics.Domain/1.0.0": {
       "type": "project",
       "path": "../Logistics.Domain/Logistics.Domain.csproj",
@@ -2509,6 +2527,7 @@
   },
   "projectFileDependencyGroups": {
     "net10.0": [
+      "Logistics.Application >= 1.0.0",
       "Logistics.Domain >= 1.0.0",
       "Microsoft.EntityFrameworkCore >= 9.0.2",
       "Microsoft.EntityFrameworkCore.Tools >= 9.0.2",
@@ -2540,6 +2559,9 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
+            "/home/umutcan/Work/LogisticC-/Logistics.Application/Logistics.Application.csproj": {
+              "projectPath": "/home/umutcan/Work/LogisticC-/Logistics.Application/Logistics.Application.csproj"
+            },
             "/home/umutcan/Work/LogisticC-/Logistics.Domain/Logistics.Domain.csproj": {
               "projectPath": "/home/umutcan/Work/LogisticC-/Logistics.Domain/Logistics.Domain.csproj"
             }

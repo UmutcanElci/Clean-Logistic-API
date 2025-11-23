@@ -1,3 +1,5 @@
+namespace Logistics.Domain.common;
+
 public class Coordinates
 {
     public double Latitude { get; private set; }
