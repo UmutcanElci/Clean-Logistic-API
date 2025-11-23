@@ -16,3 +16,5 @@
 /home/umutcan/Work/LogisticC-/Logistics.Infrastructure/obj/Debug/net10.0/Logistics.Infrastructure.pdb
 /home/umutcan/Work/LogisticC-/Logistics.Infrastructure/obj/Debug/net10.0/Logistics.Infrastructure.genruntimeconfig.cache
 /home/umutcan/Work/LogisticC-/Logistics.Infrastructure/obj/Debug/net10.0/ref/Logistics.Infrastructure.dll
+/home/umutcan/Work/LogisticC-/Logistics.Infrastructure/bin/Debug/net10.0/Logistics.Application.dll
+/home/umutcan/Work/LogisticC-/Logistics.Infrastructure/bin/Debug/net10.0/Logistics.Application.pdb

@@ -1,4 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using Logistics.Application.Interfaces;
+using Logistics.Domain;
+namespace Logistics.Infrastructure.Repositories;
+
 
 public class OrderRepository : IOrderRepository
 {

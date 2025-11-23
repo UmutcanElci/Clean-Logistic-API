@@ -1,3 +1,6 @@
+namespace Logistics.Domain;
+
+using Logistics.Domain.common;
 public class Warehouse
 {
     public Guid Id { get; set; }

@@ -1,3 +1,7 @@
+namespace Logistics.Domain;
+
+using Logistics.Domain.common;
+
 public class Vehicle
 {
     public Guid Id { get; set; }

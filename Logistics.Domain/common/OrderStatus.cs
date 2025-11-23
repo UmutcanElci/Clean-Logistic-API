@@ -1,3 +1,5 @@
+namespace Logistics.Domain.common;
+
 public enum OrderStatus
 {
     Pending,

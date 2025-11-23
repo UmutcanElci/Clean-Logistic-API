@@ -1,3 +1,6 @@
+namespace Logistics.Domain;
+
+using Logistics.Domain.common;
 public class Order
 {
     public Guid Id { get; set; }
@@ -13,6 +16,11 @@ public class Order
 
     public OrderStatus Status { get; private set; }
 
+    public Order()
+    {
+        Status = OrderStatus.Pending;
+    }
+
     public void Confirm()
     {
         if (Status == OrderStatus.Pending)
@@ -21,3 +29,4 @@ public class Order
         }
     }
 }
+

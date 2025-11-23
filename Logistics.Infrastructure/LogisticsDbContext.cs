@@ -1,4 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+namespace Logistics.Infrastructure;
+
+using Logistics.Domain;
+
 public class LogisticsDbContext : DbContext
 {
     public LogisticsDbContext(DbContextOptions<LogisticsDbContext> options) : base(options) { }
