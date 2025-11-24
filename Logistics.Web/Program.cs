@@ -34,6 +34,29 @@ app.MapPost("/orders", async (CreateOrderDto newOrder, OrderService service) =>
     return Results.Created($"/orders/{createdOrder.Id}", createdOrder);
 });
 
+app.MapPut("/orders/{id:guid}", async (Guid id, UpdateOrderDto updateOrder, OrderService service) =>
+{
+    if (id != updateOrder.OrderId)
+    {
+        return Results.BadRequest("Route ID and OrderId in body must  match.");
+    }
+    try
+    {
+        await service.UpdateOrderAsync(updateOrder);
+        return Results.NoContent();
+    }
+    catch (ArgumentException ex)
+    {
+        return Results.NotFound(ex.Message);
+    }
+});
+
+app.MapGet("/ordersDelete/{id:guid}", async (Guid id, OrderService service) =>
+{
+    await service.DeleteOrderAsync(id);
+    return Results.NoContent();
+});
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
