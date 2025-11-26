@@ -16,7 +16,12 @@ public class Vehicle
     public VehicleStatus Status { get; private set; }
 
     public Guid HubId { get; set; }
-    public required Hub Hub { get; set; }
+    public Hub Hub { get; set; }
+
+    public Vehicle()
+    {
+        Status = VehicleStatus.Idle;
+    }
 
     public void SendForMaintenance()
     {
