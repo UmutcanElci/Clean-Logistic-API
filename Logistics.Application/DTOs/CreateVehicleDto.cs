@@ -12,6 +12,5 @@ public class CreateVehicleDto
     public bool CanGoAbroad { get; set; }
     public int MaxSpeedInKph { get; set; }
 
-    public required Guid HubId { get; set; }
 
 }
