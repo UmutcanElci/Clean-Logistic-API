@@ -22,8 +22,11 @@ public class OrderRepository : IOrderRepository
     public async Task DeleteAsync(Guid orderId)
     {
         var orderToDelete = await GetByIdAsync(orderId);
-        _context.Orders.Remove(orderToDelete);
-        await _context.SaveChangesAsync();
+        if (orderToDelete != null)
+        {
+            _context.Orders.Remove(orderToDelete);
+            await _context.SaveChangesAsync();
+        }
     }
 
     public async Task<IReadOnlyList<Order>> GetAllAsync()

@@ -27,8 +27,11 @@ public class VehicleRepository : IVehicleRepository
     public async Task DeleteAsync(Guid vehicleId)
     {
         var vehicleToDelete = await GetByIdAsync(vehicleId);
-        _context.Vehicles.Remove(vehicleToDelete);
-        await _context.SaveChangesAsync();
+        if (vehicleToDelete != null)
+        {
+            _context.Vehicles.Remove(vehicleToDelete);
+            await _context.SaveChangesAsync();
+        }
     }
 
     public async Task<IReadOnlyList<Vehicle>> GetAllAsync()
