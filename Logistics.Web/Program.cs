@@ -5,6 +5,9 @@ using Logistics.Application.Interfaces;
 using Logistics.Infrastructure.Repositories;
 using Logistics.Application.Services;
 using Logistics.Application.DTOs;
+using Logistics.Domain;
+using Logistics.Domain.common;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,11 +19,13 @@ builder.Services.AddRazorComponents()
 var DbPassword = builder.Configuration["Database:Password"];
 var connectionTemplate = builder.Configuration.GetConnectionString("DefaultConnection");
 
+builder.Services.AddScoped<IHubRepository, HubRepository>();
+builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<VehicleService>();
 
-
-var correctedTemplate = connectionTemplate.Replace("_DB_PASSWORD_", DbPassword);
+var correctedTemplate = connectionTemplate!.Replace("_DB_PASSWORD_", DbPassword);
 builder.Services.AddDbContext<LogisticsDbContext>(options =>
 {
     options.UseNpgsql(correctedTemplate);
@@ -28,21 +33,51 @@ builder.Services.AddDbContext<LogisticsDbContext>(options =>
 
 var app = builder.Build();
 
-app.MapPost("/orders", async (CreateOrderDto newOrder, OrderService service) =>
+using (var scoped = app.Services.CreateScope())
 {
-    var createdOrder = await service.CreateOrderAsync(newOrder);
-    return Results.Created($"/orders/{createdOrder.Id}", createdOrder);
+    var services = scoped.ServiceProvider;
+    var context = services.GetRequiredService<LogisticsDbContext>();
+
+    if (!context.Hub.Any())
+    {
+        var initialHub = new Hub
+        {
+            Id = Guid.NewGuid(),
+        };
+
+        context.Hub.Add(initialHub);
+        context.SaveChanges();
+    }
+}
+
+
+app.MapPost("/vehicles", async (CreateVehicleDto newVehicleDto, VehicleService service) =>
+{
+    var createdVehicle = await service.CreateVehicleAsync(newVehicleDto);
+    return Results.Created($"/vehicles/{createdVehicle.Id}", createdVehicle);
 });
 
-app.MapPut("/orders/{id:guid}", async (Guid id, UpdateOrderDto updateOrder, OrderService service) =>
+app.MapGet("/vehicles", async (VehicleService service) =>
 {
-    if (id != updateOrder.OrderId)
+    var vehicle = await service.GetAllVehiclesAsync();
+    return Results.Ok(vehicle);
+});
+
+app.MapGet("/vehicles/{id:guid}", async (Guid id, VehicleService service) =>
+{
+    var vehicle = await service.GetVehicleByIdAsync(id);
+    return vehicle != null ? Results.Ok(vehicle) : Results.NotFound();
+});
+
+app.MapPut("/vehicles/{id:guid}", async (Guid id, UpdateVehicleDto updateVehicleDto, VehicleService service) =>
+{
+    if (id != updateVehicleDto.Id)
     {
-        return Results.BadRequest("Route ID and OrderId in body must  match.");
+        return Results.BadRequest("Route ID and Vehicle ID in body must match.");
     }
     try
     {
-        await service.UpdateOrderAsync(updateOrder);
+        await service.UpdateVehicleAsync(updateVehicleDto);
         return Results.NoContent();
     }
     catch (ArgumentException ex)
@@ -51,11 +86,13 @@ app.MapPut("/orders/{id:guid}", async (Guid id, UpdateOrderDto updateOrder, Orde
     }
 });
 
-app.MapGet("/ordersDelete/{id:guid}", async (Guid id, OrderService service) =>
+app.MapDelete("/vehicles/{id:guid}", async (Guid id, VehicleService service) =>
 {
-    await service.DeleteOrderAsync(id);
+    await service.DeleteVehicleAsync(id);
     return Results.NoContent();
 });
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

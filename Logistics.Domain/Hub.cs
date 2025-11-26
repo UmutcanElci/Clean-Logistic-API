@@ -1,5 +1,7 @@
 namespace Logistics.Domain;
 
+using Logistics.Domain.common;
+
 public class Hub
 {
     public Guid Id { get; set; }

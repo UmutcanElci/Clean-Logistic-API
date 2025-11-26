@@ -7,19 +7,29 @@ using Logistics.Domain.common;
 
 public class VehicleService
 {
-    private readonly IVehicleRepository _repository;
-
-    public VehicleService(IVehicleRepository repository)
+    private readonly IVehicleRepository _vehicleRepository;
+    private readonly IHubRepository _hubRepository;
+    public VehicleService(IVehicleRepository vehicleRepository, IHubRepository hubRepository)
     {
-        _repository = repository;
+        _vehicleRepository = vehicleRepository;
+        _hubRepository = hubRepository;
     }
 
     public async Task<Vehicle> CreateVehicleAsync(CreateVehicleDto vehicleDto)
     {
+        var hub = await _hubRepository.GetHubAsync();
+
+
+        if (hub == null)
+        {
+            throw new InvalidOperationException("No Hub found in the system to assign the cehicle to. Please create a hub first!");
+        }
+
         var vehicle = new Vehicle
         {
             Id = Guid.NewGuid(),
             LicensePlate = vehicleDto.LicensePlate,
+            Hub = hub,
             Type = vehicleDto.Type,
             MaxWeightInKg = vehicleDto.MaxWeightInKg,
             MaxVolumeInCubicMeters = vehicleDto.MaxVolumeInCubicMeters,
@@ -35,29 +45,29 @@ public class VehicleService
             },
         };
 
-        var createdVehicle = await _repository.CreateAsync(vehicle);
+        var createdVehicle = await _vehicleRepository.CreateAsync(vehicle);
         return createdVehicle;
 
     }
 
     public async Task<Vehicle?> GetVehicleByIdAsync(Guid id)
     {
-        return await _repository.GetByIdAsync(id);
+        return await _vehicleRepository.GetByIdAsync(id);
     }
 
     public async Task<IReadOnlyList<Vehicle>> GetAllVehiclesAsync()
     {
-        return await _repository.GetAllAsync();
+        return await _vehicleRepository.GetAllAsync();
     }
 
     public async Task DeleteVehicleAsync(Guid id)
     {
-        await _repository.DeleteAsync(id);
+        await _vehicleRepository.DeleteAsync(id);
     }
 
     public async Task UpdateVehicleAsync(UpdateVehicleDto vehicleDto)
     {
-        var existingVehicle = await _repository.GetByIdAsync(vehicleDto.Id);
+        var existingVehicle = await _vehicleRepository.GetByIdAsync(vehicleDto.Id);
 
         if (existingVehicle == null)
         {
@@ -79,6 +89,6 @@ public class VehicleService
         };
 
 
-        await _repository.UpdateAsync(existingVehicle);
+        await _vehicleRepository.UpdateAsync(existingVehicle);
     }
 }
