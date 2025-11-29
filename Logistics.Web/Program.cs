@@ -22,8 +22,10 @@ var connectionTemplate = builder.Configuration.GetConnectionString("DefaultConne
 builder.Services.AddScoped<IHubRepository, HubRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<VehicleService>();
+builder.Services.AddScoped<WarehouseService>();
 
 var correctedTemplate = connectionTemplate!.Replace("_DB_PASSWORD_", DbPassword);
 builder.Services.AddDbContext<LogisticsDbContext>(options =>
@@ -51,33 +53,33 @@ using (var scoped = app.Services.CreateScope())
 }
 
 
-app.MapPost("/vehicles", async (CreateVehicleDto newVehicleDto, VehicleService service) =>
+app.MapPost("/warehouses", async (CreateWarehouseDto newWarehouseDto, WarehouseService service) =>
 {
-    var createdVehicle = await service.CreateVehicleAsync(newVehicleDto);
-    return Results.Created($"/vehicles/{createdVehicle.Id}", createdVehicle);
+    var createdWarehouse = await service.CreateWarehouseAsync(newWarehouseDto);
+    return Results.Created($"/warehouses/{createdWarehouse.Id}", createdWarehouse);
 });
 
-app.MapGet("/vehicles", async (VehicleService service) =>
+app.MapGet("/warehouses", async (WarehouseService service) =>
 {
-    var vehicle = await service.GetAllVehiclesAsync();
-    return Results.Ok(vehicle);
+    var warehouse = await service.GetAllWarehousesAsync();
+    return Results.Ok(warehouse);
 });
 
-app.MapGet("/vehicles/{id:guid}", async (Guid id, VehicleService service) =>
+app.MapGet("/warehouses/{id:guid}", async (Guid id, WarehouseService service) =>
 {
-    var vehicle = await service.GetVehicleByIdAsync(id);
-    return vehicle != null ? Results.Ok(vehicle) : Results.NotFound();
+    var warehouse = await service.GetWarehouseByIdAsync(id);
+    return warehouse != null ? Results.Ok(warehouse) : Results.NotFound();
 });
 
-app.MapPut("/vehicles/{id:guid}", async (Guid id, UpdateVehicleDto updateVehicleDto, VehicleService service) =>
+app.MapPut("/warehouses/{id:guid}", async (Guid id, UpdateWarehouseDto updateWarehouseDto, WarehouseService service) =>
 {
-    if (id != updateVehicleDto.Id)
+    if (id != updateWarehouseDto.Id)
     {
-        return Results.BadRequest("Route ID and Vehicle ID in body must match.");
+        return Results.BadRequest("Route ID and warehouse ID in body must match.");
     }
     try
     {
-        await service.UpdateVehicleAsync(updateVehicleDto);
+        await service.UpdateWarehouseAsync(updateWarehouseDto);
         return Results.NoContent();
     }
     catch (ArgumentException ex)
@@ -86,9 +88,9 @@ app.MapPut("/vehicles/{id:guid}", async (Guid id, UpdateVehicleDto updateVehicle
     }
 });
 
-app.MapDelete("/vehicles/{id:guid}", async (Guid id, VehicleService service) =>
+app.MapDelete("/warehouses/{id:guid}", async (Guid id, WarehouseService service) =>
 {
-    await service.DeleteVehicleAsync(id);
+    await service.DeleteWarehouseAsync(id);
     return Results.NoContent();
 });
 
