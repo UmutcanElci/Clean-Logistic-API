@@ -3,7 +3,6 @@ using Logistics.Domain.common;
 using Logistics.Application.DTOs;
 using Logistics.Application.Interfaces;
 
-
 namespace Logistics.Application.Services;
 
 public class OrderService
@@ -15,7 +14,7 @@ public class OrderService
         _repository = repository;
     }
 
-    public async Task<Order> CreateOrderAsync(CreateOrderDto createOrderDto)
+    public async Task<OrderDto> CreateOrderAsync(CreateOrderDto createOrderDto)
     {
         var order = new Order
         {
@@ -23,8 +22,6 @@ public class OrderService
             CustomerName = createOrderDto.CustomerName,
             MailAddress = createOrderDto.MailAddress,
             PhoneNumber = createOrderDto.PhoneNumber,
-            OrderItems = new List<OrderItem>(),
-
             PickUpLocation = new Location
             {
                 StreetAddress = createOrderDto.PickUpLocation.StreetAddress,
@@ -33,7 +30,6 @@ public class OrderService
                 Country = createOrderDto.PickUpLocation.Country,
                 GpsCoordinates = new Coordinates(0.0, 0.0)
             },
-
             DestinationLocation = new Location
             {
                 StreetAddress = createOrderDto.DestinationLocation.StreetAddress,
@@ -41,34 +37,37 @@ public class OrderService
                 PostalCode = createOrderDto.DestinationLocation.PostalCode,
                 Country = createOrderDto.DestinationLocation.Country,
                 GpsCoordinates = new Coordinates(0.0, 0.0)
-            }
+            },
+            OrderItems = createOrderDto.Items.Select(item => new OrderItem
+            {
+                Description = item.Description,
+                WeightInKg = item.WeightInKg,
+                Quantity = item.Quantity
+            }).ToList()
         };
 
+        var createdOrder = await _repository.CreateAsync(order);
+        return MapToOrderDto(createdOrder);
+    }
 
+    public async Task<OrderDto?> GetOrderByIdAsync(Guid orderId)
+    {
+        var order = await _repository.GetByIdAsync(orderId);
 
-        order.OrderItems = new List<OrderItem>();
-        foreach (var itemDto in createOrderDto.Items)
+        if (order == null)
         {
-            order.OrderItems.Add(new OrderItem
-            {
-                Description = itemDto.Description,
-                WeightInKg = itemDto.WeightInKg,
-                Quantity = itemDto.Quantity
-            });
+            return null;
         }
 
-        var createdOrder = await _repository.CreateAsync(order);
-        return createdOrder;
+        return MapToOrderDto(order);
     }
 
-    public async Task<Order?> GetOrderByIdAsync(Guid orderId)
+    public async Task<IReadOnlyList<OrderDto>> GetAllOrderAsync()
     {
-        return await _repository.GetByIdAsync(orderId);
-    }
+        var orders = await _repository.GetAllAsync();
 
-    public async Task<IReadOnlyList<Order>> GetAllOrderAsync()
-    {
-        return await _repository.GetAllAsync();
+        var orderDtos = orders.Select(order => MapToOrderDto(order)).ToList();
+        return orderDtos;
     }
 
     public async Task UpdateOrderAsync(UpdateOrderDto updateOrderDto)
@@ -124,4 +123,35 @@ public class OrderService
         await _repository.DeleteAsync(orderId);
     }
 
+    private OrderDto MapToOrderDto(Order order)
+    {
+        return new OrderDto
+        {
+            Id = order.Id,
+            CustomerName = order.CustomerName,
+            MailAddress = order.MailAddress,
+            PhoneNumber = order.PhoneNumber,
+            Status = order.Status,
+            PickUpLocation = new LocationDto
+            {
+                StreetAddress = order.PickUpLocation.StreetAddress,
+                City = order.PickUpLocation.City,
+                PostalCode = order.PickUpLocation.PostalCode,
+                Country = order.PickUpLocation.Country
+            },
+            DestinationLocation = new LocationDto
+            {
+                StreetAddress = order.DestinationLocation.StreetAddress,
+                City = order.DestinationLocation.City,
+                PostalCode = order.DestinationLocation.PostalCode,
+                Country = order.DestinationLocation.Country
+            },
+            OrderItems = order.OrderItems.Select(item => new OrderItemDto
+            {
+                Description = item.Description,
+                WeightInKg = item.WeightInKg,
+                Quantity = item.Quantity
+            }).ToList()
+        };
+    }
 }
