@@ -15,7 +15,7 @@ public class VehicleService
         _hubRepository = hubRepository;
     }
 
-    public async Task<Vehicle> CreateVehicleAsync(CreateVehicleDto vehicleDto)
+    public async Task<VehicleDto> CreateVehicleAsync(CreateVehicleDto vehicleDto)
     {
         var hub = await _hubRepository.GetHubAsync();
 
@@ -46,18 +46,28 @@ public class VehicleService
         };
 
         var createdVehicle = await _vehicleRepository.CreateAsync(vehicle);
-        return createdVehicle;
+        return MapToVehicleDto(createdVehicle);
 
     }
 
-    public async Task<Vehicle?> GetVehicleByIdAsync(Guid id)
+    public async Task<VehicleDto?> GetVehicleByIdAsync(Guid id)
     {
-        return await _vehicleRepository.GetByIdAsync(id);
+        var vehicle = await _vehicleRepository.GetByIdAsync(id);
+
+        if (vehicle == null)
+        {
+            return null;
+        }
+        return MapToVehicleDto(vehicle);
     }
 
-    public async Task<IReadOnlyList<Vehicle>> GetAllVehiclesAsync()
+    public async Task<IReadOnlyList<VehicleDto>> GetAllVehiclesAsync()
     {
-        return await _vehicleRepository.GetAllAsync();
+        var vehicles = await _vehicleRepository.GetAllAsync();
+
+        var vehicleDtos = vehicles.Select(vehicle => MapToVehicleDto(vehicle)).ToList();
+
+        return vehicleDtos;
     }
 
     public async Task DeleteVehicleAsync(Guid id)
@@ -91,4 +101,27 @@ public class VehicleService
 
         await _vehicleRepository.UpdateAsync(existingVehicle);
     }
+
+    private VehicleDto MapToVehicleDto(Vehicle vehicle)
+    {
+        return new VehicleDto
+        {
+            Id = vehicle.Id,
+            LicensePlate = vehicle.LicensePlate,
+            Type = vehicle.Type,
+            MaxWeightInKg = vehicle.MaxWeightInKg,
+            MaxVolumeInCubicMeters = vehicle.MaxVolumeInCubicMeters,
+            CanGoAbroad = vehicle.CanGoAbroad,
+            MaxSpeedInKph = vehicle.MaxSpeedInKph,
+            CurrentLocation = new LocationDto
+            {
+                StreetAddress = vehicle.CurrentLocation.StreetAddress,
+                City = vehicle.CurrentLocation.City,
+                PostalCode = vehicle.CurrentLocation.PostalCode,
+                Country = vehicle.CurrentLocation.Country
+            },
+            Status = vehicle.Status
+        };
+    }
 }
+
