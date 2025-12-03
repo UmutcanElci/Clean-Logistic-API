@@ -70,4 +70,18 @@ public static class MappingExtensions
         };
     }
 
+    public static RouteDto ToDto(this Route route)
+    {
+        return new RouteDto
+        {
+            Id = route.Id,
+            OrderId = route.OrderId,
+            Status = route.Status,
+            AssignVehicle = route.AssignVehicle.ToDto(),
+            Stops = route.Stops.Select(stop => stop.ToDto()).ToList()
+        };
+    }
+
+
+
 }

@@ -1,8 +1,8 @@
 namespace Logistics.Application.Services;
 
 using Logistics.Application.Interfaces;
-using Logistics.Domain;
 using Logistics.Application.DTOs;
+using Logistics.Application.Mappers;
 
 public class HubService
 {
@@ -21,17 +21,31 @@ public class HubService
 
     public async Task<RouteDto> GenerateRouteForOrderAsync(Guid orderId)
     {
-        throw new Exception();
+        var order = await _orderRepository.GetByIdAsync(orderId);
+        if (order == null)
+        {
+            throw new ArgumentException($"Order with ID {orderId} mor found.");
+        }
+
+        var hub = await _hubRepository.GetHubAsync();
+        if (hub == null)
+        {
+            throw new InvalidOperationException("No Hub found in the system to create a route.");
+        }
+
+        var vehicles = await _vehicleRepository.GetAllAsync();
+        if (vehicles == null)
+        {
+            throw new InvalidOperationException("No available vehicles found to assign to the route.");
+        }
+
+        var assignVehicle = vehicles.First();
+
+        var newRoute = hub.CreateRouteForOrder(order, assignVehicle);
+
+        var createdRoute = await _routeRepository.CreateAsync(newRoute);
+
+        return createdRoute.ToDto();
     }
 
-    private RouteDto MapToRouteDto(Route route)
-    {
-        return new RouteDto
-        {
-            Id = route.Id,
-            AssignVehicle = route.AssignVehicle,
-            Stops = route.Stops,
-            Status = route.Status
-        };
-    }
 }

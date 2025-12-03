@@ -4,6 +4,7 @@ using Logistics.Application.Interfaces;
 using Logistics.Application.DTOs;
 using Logistics.Domain.common;
 using Logistics.Domain;
+using Logistics.Application.Mappers;
 
 public class WarehouseService
 {
@@ -34,7 +35,7 @@ public class WarehouseService
 
         var createdWarehouse = await _repository.CreateAsync(createWarehouse);
 
-        return MapToWarehouseDto(createdWarehouse);
+        return createdWarehouse.ToDto();
     }
 
     public async Task<WarehouseDto?> GetWarehouseByIdAsync(Guid id)
@@ -44,14 +45,15 @@ public class WarehouseService
         {
             return null;
         }
-        return MapToWarehouseDto(warehouse);
+
+        return warehouse.ToDto();
     }
 
     public async Task<IReadOnlyList<WarehouseDto>> GetAllWarehousesAsync()
     {
         var warehouses = await _repository.GetAllAsync();
 
-        var warehousesDto = warehouses.Select(warehouse => MapToWarehouseDto(warehouse)).ToList();
+        var warehousesDto = warehouses.Select(warehouse => warehouse.ToDto()).ToList();
 
         return warehousesDto;
     }
@@ -84,21 +86,5 @@ public class WarehouseService
         await _repository.DeleteAsync(id);
     }
 
-    private WarehouseDto MapToWarehouseDto(Warehouse warehouse)
-    {
-        return new WarehouseDto
-        {
-            Id = warehouse.Id,
-            Name = warehouse.Name,
-            MaxCapacity = warehouse.MaxCapacity,
-            Type = warehouse.Type,
-            Address = new LocationDto
-            {
-                StreetAddress = warehouse.Address.StreetAddress,
-                City = warehouse.Address.City,
-                PostalCode = warehouse.Address.PostalCode,
-                Country = warehouse.Address.Country,
-            }
-        };
-    }
+
 }

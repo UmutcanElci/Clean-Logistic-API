@@ -23,9 +23,11 @@ builder.Services.AddScoped<IHubRepository, HubRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+builder.Services.AddScoped<IRouteRepository, RouteRepository>();
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<VehicleService>();
 builder.Services.AddScoped<WarehouseService>();
+builder.Services.AddScoped<HubService>();
 
 var correctedTemplate = connectionTemplate!.Replace("_DB_PASSWORD_", DbPassword);
 builder.Services.AddDbContext<LogisticsDbContext>(options =>
@@ -52,48 +54,11 @@ using (var scoped = app.Services.CreateScope())
     }
 }
 
-
-app.MapPost("/warehouses", async (CreateWarehouseDto newWarehouseDto, WarehouseService service) =>
+app.MapPost("/routes/generate", async (CreateRouteDto routeDto, HubService service) =>
 {
-    var createdWarehouse = await service.CreateWarehouseAsync(newWarehouseDto);
-    return Results.Created($"/warehouses/{createdWarehouse.Id}", createdWarehouse);
+    var newRoute = await service.GenerateRouteForOrderAsync(routeDto.OrderId);
+    return Results.Created($"/routes/{newRoute.Id}", newRoute);
 });
-
-app.MapGet("/warehouses", async (WarehouseService service) =>
-{
-    var warehouse = await service.GetAllWarehousesAsync();
-    return Results.Ok(warehouse);
-});
-
-app.MapGet("/warehouses/{id:guid}", async (Guid id, WarehouseService service) =>
-{
-    var warehouse = await service.GetWarehouseByIdAsync(id);
-    return warehouse != null ? Results.Ok(warehouse) : Results.NotFound();
-});
-
-app.MapPut("/warehouses/{id:guid}", async (Guid id, UpdateWarehouseDto updateWarehouseDto, WarehouseService service) =>
-{
-    if (id != updateWarehouseDto.Id)
-    {
-        return Results.BadRequest("Route ID and warehouse ID in body must match.");
-    }
-    try
-    {
-        await service.UpdateWarehouseAsync(updateWarehouseDto);
-        return Results.NoContent();
-    }
-    catch (ArgumentException ex)
-    {
-        return Results.NotFound(ex.Message);
-    }
-});
-
-app.MapDelete("/warehouses/{id:guid}", async (Guid id, WarehouseService service) =>
-{
-    await service.DeleteWarehouseAsync(id);
-    return Results.NoContent();
-});
-
 
 
 // Configure the HTTP request pipeline.

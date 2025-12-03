@@ -12,8 +12,18 @@ public class Hub
     {
 
     }
-    public Route CreateRouteForOrder(Order order)
+    public Route CreateRouteForOrder(Order order, Vehicle assignedvehicle)
     {
-        return null;
+        return new Route
+        {
+            Id = Guid.NewGuid(),
+            OrderId = order.Id,
+            Order = order,
+            AssignVehicle = assignedvehicle,
+            Status = RouteStatus.Planned,
+            Stops = new List<Location>()
+        };
     }
+
+
 }
