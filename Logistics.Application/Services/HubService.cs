@@ -2,6 +2,7 @@ namespace Logistics.Application.Services;
 
 using Logistics.Application.Interfaces;
 using Logistics.Domain;
+using Logistics.Application.DTOs;
 
 public class HubService
 {
@@ -18,8 +19,19 @@ public class HubService
         _routeRepository = routeRepository;
     }
 
-    public async Task<Route> GenerateRouteForOrderAsync(Guid orderId)
+    public async Task<RouteDto> GenerateRouteForOrderAsync(Guid orderId)
     {
         throw new Exception();
+    }
+
+    private RouteDto MapToRouteDto(Route route)
+    {
+        return new RouteDto
+        {
+            Id = route.Id,
+            AssignVehicle = route.AssignVehicle,
+            Stops = route.Stops,
+            Status = route.Status
+        };
     }
 }
