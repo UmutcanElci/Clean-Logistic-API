@@ -4,6 +4,7 @@ using Logistics.Application.Interfaces;
 using Logistics.Application.DTOs;
 using Logistics.Domain;
 using Logistics.Domain.common;
+using Logistics.Application.Mappers;
 
 public class VehicleService
 {
@@ -46,7 +47,7 @@ public class VehicleService
         };
 
         var createdVehicle = await _vehicleRepository.CreateAsync(vehicle);
-        return MapToVehicleDto(createdVehicle);
+        return createdVehicle.ToDto();
 
     }
 
@@ -58,14 +59,14 @@ public class VehicleService
         {
             return null;
         }
-        return MapToVehicleDto(vehicle);
+        return vehicle.ToDto();
     }
 
     public async Task<IReadOnlyList<VehicleDto>> GetAllVehiclesAsync()
     {
         var vehicles = await _vehicleRepository.GetAllAsync();
 
-        var vehicleDtos = vehicles.Select(vehicle => MapToVehicleDto(vehicle)).ToList();
+        var vehicleDtos = vehicles.Select(vehicle => vehicle.ToDto()).ToList();
 
         return vehicleDtos;
     }
@@ -102,26 +103,4 @@ public class VehicleService
         await _vehicleRepository.UpdateAsync(existingVehicle);
     }
 
-    private VehicleDto MapToVehicleDto(Vehicle vehicle)
-    {
-        return new VehicleDto
-        {
-            Id = vehicle.Id,
-            LicensePlate = vehicle.LicensePlate,
-            Type = vehicle.Type,
-            MaxWeightInKg = vehicle.MaxWeightInKg,
-            MaxVolumeInCubicMeters = vehicle.MaxVolumeInCubicMeters,
-            CanGoAbroad = vehicle.CanGoAbroad,
-            MaxSpeedInKph = vehicle.MaxSpeedInKph,
-            CurrentLocation = new LocationDto
-            {
-                StreetAddress = vehicle.CurrentLocation.StreetAddress,
-                City = vehicle.CurrentLocation.City,
-                PostalCode = vehicle.CurrentLocation.PostalCode,
-                Country = vehicle.CurrentLocation.Country
-            },
-            Status = vehicle.Status
-        };
-    }
 }
-

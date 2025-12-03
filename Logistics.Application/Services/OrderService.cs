@@ -2,6 +2,7 @@ using Logistics.Domain;
 using Logistics.Domain.common;
 using Logistics.Application.DTOs;
 using Logistics.Application.Interfaces;
+using Logistics.Application.Mappers;
 
 namespace Logistics.Application.Services;
 
@@ -47,7 +48,7 @@ public class OrderService
         };
 
         var createdOrder = await _repository.CreateAsync(order);
-        return MapToOrderDto(createdOrder);
+        return createdOrder.ToDto();
     }
 
     public async Task<OrderDto?> GetOrderByIdAsync(Guid orderId)
@@ -59,14 +60,14 @@ public class OrderService
             return null;
         }
 
-        return MapToOrderDto(order);
+        return order.ToDto();
     }
 
     public async Task<IReadOnlyList<OrderDto>> GetAllOrderAsync()
     {
         var orders = await _repository.GetAllAsync();
 
-        var orderDtos = orders.Select(order => MapToOrderDto(order)).ToList();
+        var orderDtos = orders.Select(order => order.ToDto()).ToList();
         return orderDtos;
     }
 
