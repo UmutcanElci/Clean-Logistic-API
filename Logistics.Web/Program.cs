@@ -29,6 +29,8 @@ builder.Services.AddScoped<VehicleService>();
 builder.Services.AddScoped<WarehouseService>();
 builder.Services.AddScoped<HubService>();
 
+builder.Services.AddControllers();
+
 var correctedTemplate = connectionTemplate!.Replace("_DB_PASSWORD_", DbPassword);
 builder.Services.AddDbContext<LogisticsDbContext>(options =>
 {
@@ -54,11 +56,7 @@ using (var scoped = app.Services.CreateScope())
     }
 }
 
-app.MapPost("/routes/generate", async (CreateRouteDto routeDto, HubService service) =>
-{
-    var newRoute = await service.GenerateRouteForOrderAsync(routeDto.OrderId);
-    return Results.Created($"/routes/{newRoute.Id}", newRoute);
-});
+
 
 
 // Configure the HTTP request pipeline.
@@ -72,7 +70,7 @@ app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages:
 app.UseHttpsRedirection();
 
 app.UseAntiforgery();
-
+app.MapControllers();
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
