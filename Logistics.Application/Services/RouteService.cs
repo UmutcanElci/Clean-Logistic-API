@@ -1,7 +1,9 @@
 namespace Logistics.Application.Services;
 
 using Logistics.Application.Interfaces;
-using Logistics.Domain;
+using Logistics.Application.DTOs;
+using Logistics.Application.Mappers;
+
 
 public class RouteService
 {
@@ -12,14 +14,23 @@ public class RouteService
         _routeRepository = routeRepository;
     }
 
-    public async Task<Route?> GetRouteByIdAsync(Guid id)
+    public async Task<RouteDto?> GetRouteByIdAsync(Guid id)
     {
-        return await _routeRepository.GetByIdAsync(id);
+        var route = await _routeRepository.GetByIdAsync(id);
+
+        if (route == null)
+        {
+            return null;
+        }
+
+        return route.ToDto();
     }
 
-    public async Task<IReadOnlyList<Route>> GetAllRoutesAsync()
+    public async Task<IReadOnlyList<RouteDto>> GetAllRoutesAsync()
     {
-        return await _routeRepository.GetAllAsync();
+        var routes = await _routeRepository.GetAllAsync();
+        return routes.Select(route => route.ToDto()).ToList();
+
     }
 
 
