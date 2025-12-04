@@ -123,36 +123,4 @@ public class OrderService
     {
         await _repository.DeleteAsync(orderId);
     }
-
-    private OrderDto MapToOrderDto(Order order)
-    {
-        return new OrderDto
-        {
-            Id = order.Id,
-            CustomerName = order.CustomerName,
-            MailAddress = order.MailAddress,
-            PhoneNumber = order.PhoneNumber,
-            Status = order.Status,
-            PickUpLocation = new LocationDto
-            {
-                StreetAddress = order.PickUpLocation.StreetAddress,
-                City = order.PickUpLocation.City,
-                PostalCode = order.PickUpLocation.PostalCode,
-                Country = order.PickUpLocation.Country
-            },
-            DestinationLocation = new LocationDto
-            {
-                StreetAddress = order.DestinationLocation.StreetAddress,
-                City = order.DestinationLocation.City,
-                PostalCode = order.DestinationLocation.PostalCode,
-                Country = order.DestinationLocation.Country
-            },
-            OrderItems = order.OrderItems.Select(item => new OrderItemDto
-            {
-                Description = item.Description,
-                WeightInKg = item.WeightInKg,
-                Quantity = item.Quantity
-            }).ToList()
-        };
-    }
 }
