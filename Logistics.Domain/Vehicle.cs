@@ -16,7 +16,7 @@ public class Vehicle
     public VehicleStatus Status { get; private set; }
 
     public Guid HubId { get; set; }
-    public Hub Hub { get; set; }
+    public Hub? Hub { get; set; }
 
     public Vehicle()
     {
