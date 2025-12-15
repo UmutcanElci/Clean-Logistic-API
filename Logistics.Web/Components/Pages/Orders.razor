@@ -1,0 +1,40 @@
+@page "/orders"
+@using Logistics.Application.DTOs
+@using Logistics.Application.Services
+@inject OrderService OrderService
+
+<h3>Orders</h3>
+
+@if (_orders == null){
+    <p><em>Loadinng....</em></p>
+  }else{
+    <table class="table">
+    <thead>
+    <tr>
+    <th>Order ID</th>
+    <th>Customer</th>
+    <th>Status</th>
+    <th>Destination</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach(var order in _orders){
+      <tr>
+      <td>@order.Id</td>
+      <td>@order.CustomerName</td>
+      <td>@order.Status</td>
+      <td>@order.DestinationLocation.City, @order.DestinationLocation.Country</td>
+      </tr>
+      }
+      </tbody>
+      </table>
+    }
+
+    @code{
+        private IReadOnlyList<OrderDto>? _orders;
+        protected override async Task OnInitializedAsync(){
+            _orders = await OrderService.GetAllOrderAsync();
+          }
+      }
+
+
