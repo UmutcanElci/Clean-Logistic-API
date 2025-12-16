@@ -37,7 +37,7 @@ public class WarehousesController : ControllerBase
     {
         var warehouse = await _service.GetWarehouseByIdAsync(id);
 
-        if (id == null)
+        if (warehouse == null)
         {
             return NotFound();
         }
