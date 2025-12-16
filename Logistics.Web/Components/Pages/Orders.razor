@@ -2,9 +2,9 @@
 @using Logistics.Application.DTOs
 @using Logistics.Application.Services
 @inject OrderService OrderService
-
+@using Logistics.Web/Components/Pages/Orders.razor
 <h3>Orders</h3>
-
+ <a href="/orders/create" class="btn btn-primary mb-3">Create New Order</a>
 @if (_orders == null){
     <p><em>Loadinng....</em></p>
   }else{

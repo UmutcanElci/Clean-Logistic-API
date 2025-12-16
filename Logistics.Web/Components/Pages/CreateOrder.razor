@@ -1,0 +1,136 @@
+@page "/orders/create"
+     @using Logistics.Application.DTOs
+     @using Logistics.Application.Services
+     @using Logistics.Domain.common // For enums like StorageType or VehicleType if used in DTOs
+     @inject OrderService OrderService
+     @inject NavigationManager NavigationManager
+    
+     <h3>Create New Order</h3>
+    
+     <EditForm Model="@_order" OnValidSubmit="HandleCreateOrder" Formname="create-order-form">
+   3     <DataAnnotationsValidator />
+   4     <ValidationSummary />
+    
+         <h4>Customer Details</h4>
+         <div class="mb-3">
+             <label for="customerName" class="form-label">Customer Name</label>
+             <InputText id="customerName" class="form-control" @bind-Value="_order.CustomerName" />
+             <ValidationMessage For="@(() => _order.CustomerName)" />
+         </div>
+    
+         <div class="mb-3">
+             <label for="email" class="form-label">Email Address</label>
+             <InputText id="email" class="form-control" @bind-Value="_order.MailAddress" />
+             <ValidationMessage For="@(() => _order.MailAddress)" />
+         </div>
+    
+         <div class="mb-3">
+             <label for="phone" class="form-label">Phone Number</label>
+             <InputText id="phone" class="form-control" @bind-Value="_order.PhoneNumber" />
+             <ValidationMessage For="@(() => _order.PhoneNumber)" />
+         </div>
+    
+         <h4>Pickup Location</h4>
+         <div class="mb-3">
+             <label for="pickupStreet" class="form-label">Street Address</label>
+             <InputText id="pickupStreet" class="form-control" @bind-Value="_order.PickUpLocation.StreetAddress" />
+             <ValidationMessage For="@(() => _order.PickUpLocation.StreetAddress)" />
+         </div>
+         <div class="mb-3">
+             <label for="pickupCity" class="form-label">City</label>
+             <InputText id="pickupCity" class="form-control" @bind-Value="_order.PickUpLocation.City" />
+             <ValidationMessage For="@(() => _order.PickUpLocation.City)" />
+         </div>
+         <div class="mb-3">
+             <label for="pickupPostalCode" class="form-label">Postal Code</label>
+             <InputNumber id="pickupPostalCode" class="form-control" @bind-Value="_order.PickUpLocation.PostalCode" />
+             <ValidationMessage For="@(() => _order.PickUpLocation.PostalCode)" />
+         </div>
+         <div class="mb-3">
+             <label for="pickupCountry" class="form-label">Country</label>
+             <InputText id="pickupCountry" class="form-control" @bind-Value="_order.PickUpLocation.Country" />
+             <ValidationMessage For="@(() => _order.PickUpLocation.Country)" />
+         </div>
+    
+         <h4>Destination Location</h4>
+         <div class="mb-3">
+             <label for="destStreet" class="form-label">Street Address</label>
+             <InputText id="destStreet" class="form-control" @bind-Value="_order.DestinationLocation.StreetAddress" />
+             <ValidationMessage For="@(() => _order.DestinationLocation.StreetAddress)" />
+         </div>
+         <div class="mb-3">
+             <label for="destCity" class="form-label">City</label>
+             <InputText id="destCity" class="form-control" @bind-Value="_order.DestinationLocation.City" />
+             <ValidationMessage For="@(() => _order.DestinationLocation.City)" />
+         </div>
+         <div class="mb-3">
+             <label for="destPostalCode" class="form-label">Postal Code</label>
+             <InputNumber id="destPostalCode" class="form-control" @bind-Value="_order.DestinationLocation.PostalCode" />
+             <ValidationMessage For="@(() => _order.DestinationLocation.PostalCode)" />
+         </div>
+         <div class="mb-3">
+             <label for="destCountry" class="form-label">Country</label>
+             <InputText id="destCountry" class="form-control" @bind-Value="_order.DestinationLocation.Country" />
+             <ValidationMessage For="@(() => _order.DestinationLocation.Country)" />
+         </div>
+    
+         <h4>Order Items</h4>
+         @foreach (var item in _order.Items)
+         {
+             <div class="card card-body bg-light mb-3">
+                 <div class="mb-3">
+                     <label for="itemDescription" class="form-label">Description</label>
+                     <InputText id="@($"itemDescription_{item.GetHashCode()}")" class="form-control" @bind-Value="item.Description" />
+                     <ValidationMessage For="@(() => item.Description)" />
+                 </div>
+                 <div class="mb-3">
+                     <label for="itemWeight" class="form-label">Weight (Kg)</label>
+                     <InputNumber id="@($"itemWeight_{item.GetHashCode()}")" class="form-control" @bind-Value="item.WeightInKg" />
+                     <ValidationMessage For="@(() => item.WeightInKg)" />
+                 </div>
+                 <div class="mb-3">
+                     <label for="itemQuantity" class="form-label">Quantity</label>
+                     <InputNumber id="@($"itemQuantity_{item.GetHashCode()}")" class="form-control" @bind-Value="item.Quantity" />
+                     <ValidationMessage For="@(() => item.Quantity)" />
+                 </div>
+                 <button type="button" class="btn btn-danger" @onclick="() => RemoveOrderItem(item)">Remove Item</button>
+             </div>
+         }
+         <button type="button" class="btn btn-secondary mb-3" @onclick="AddOrderItem">Add Order Item</button>
+   
+        <br />
+        <button type="submit" class="btn btn-primary">Create Order</button>
+    </EditForm>
+   
+    @code {
+      private void AddOrderItem()
+    {
+        _order.Items.Add(new CreateOrderItemDto()
+        {
+            Description = "", // Default empty string
+            WeightInKg = 0.0, // Default for double
+            Quantity = 0      // Default for int
+        });
+    }
+        private CreateOrderDto _order = new()
+        {
+            CustomerName = "John Doe",
+            MailAddress = "john.doe@example.com",
+            PhoneNumber = "555-1234",
+            PickUpLocation = new LocationDto { StreetAddress = "123 Main St", City = "Anytown", PostalCode = 12345, Country = "USA" },
+            DestinationLocation = new LocationDto { StreetAddress = "456 Oak Ave", City = "Otherville", PostalCode = 67890, Country = "USA" },
+            Items = new List<CreateOrderItemDto> { new() { Description = "Item 1", Quantity = 1, WeightInKg = 10.0 } } // Start with one item
+        };
+   
+        private async Task HandleCreateOrder()
+        {
+            await OrderService.CreateOrderAsync(_order);
+            NavigationManager.NavigateTo("/orders");
+        }
+   
+   
+        private void RemoveOrderItem(CreateOrderItemDto itemToRemove)
+        {
+            _order.Items.Remove(itemToRemove);
+        }
+    }

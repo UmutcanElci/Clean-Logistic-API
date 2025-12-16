@@ -1,8 +1,9 @@
 namespace Logistics.Application.DTOs;
 
+using System.ComponentModel.DataAnnotations;
 public class CreateOrderItemDto
 {
-    public required string Description { get; set; }
-    public required double WeightInKg { get; set; }
-    public required int Quantity { get; set; }
+    [Required] public required string Description { get; set; }
+    [Required] public required double WeightInKg { get; set; }
+    [Required] public required int Quantity { get; set; }
 }
