@@ -1,0 +1,78 @@
+     @page "/orders/{OrderId:guid}"
+        @using Logistics.Application.DTOs
+        @using Logistics.Application.Services
+        @inject OrderService OrderService
+        @inject IJSRuntime JsRuntime
+        @inject NavigationManager NavigationManager
+
+        <h3>Order Details</h3>
+   <button class="btn btn-danger" @onclick="HandleDeleteOrder">Delete Order</button>
+        @if (_order == null)
+        {
+            <p><em>Loading or Order not found...</em></p>
+        }
+        else
+        {
+            <h4>Customer</h4>
+            <p><strong>Name:</strong> @_order.CustomerName</p>
+            <p><strong>Email:</strong> @_order.MailAddress</p>
+            <p><strong>Phone:</strong> @_order.PhoneNumber</p>
+   
+            <hr />
+   
+            <h4>Details</h4>
+            <p><strong>Status:</strong> @_order.Status</p>
+   
+            <hr />
+   
+            <h4>Items</h4>
+            @if (_order.OrderItems.Any())
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Weight (Kg)</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in _order.OrderItems)
+                        {
+                            <tr>
+                                <td>@item.Description</td>
+                                <td>@item.WeightInKg</td>
+                                <td>@item.Quantity</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>No items in this order.</p>
+            }
+        }
+   
+        @code {
+            [Parameter]
+            public Guid OrderId { get; set; }
+   
+            private OrderDto? _order;
+   
+            protected override async Task OnInitializedAsync()
+            {
+                _order = await OrderService.GetOrderByIdAsync(OrderId);
+            }
+
+   
+        private async Task HandleDeleteOrder()
+        {
+            bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete this order?");
+            if (confirmed)
+            {
+                await OrderService.DeleteOrderAsync(OrderId);
+                NavigationManager.NavigateTo("/orders"); 
+            }
+        }
+        }
