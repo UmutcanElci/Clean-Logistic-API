@@ -1,0 +1,112 @@
+   @page "/orders/update/{OrderId:guid}"
+        @rendermode InteractiveServer
+        @using Logistics.Application.DTOs
+        @using Logistics.Application.Services
+        @inject OrderService OrderService
+        @inject NavigationManager NavigationManager
+   
+        <h3>Update Order</h3>
+   
+        @if (_order == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <EditForm Model="@_order" OnValidSubmit="HandleUpdateOrder" FormName="update-order-form">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+   
+                <h4>Customer Details</h4>
+                <div class="mb-3">
+                    <label for="customerName" class="form-label">Customer Name</label>
+                    <InputText id="customerName" class="form-control" @bind-Value="_order.CustomerName" />
+                    <ValidationMessage For="@(() => _order.CustomerName)" />
+                </div>
+   
+                <h4>Order Items</h4>
+                @foreach (var item in _order.Items)
+                {
+                    <div class="card card-body bg-light mb-3">
+                        <div class="mb-3">
+                            <label>Description</label>
+                            <InputText class="form-control" @bind-Value="item.Description" />
+                            <ValidationMessage For="@(() => item.Description)" />
+                        </div>
+                        <div class="mb-3">
+                            <label>Weight (Kg)</label>
+                            <InputNumber class="form-control" @bind-Value="item.WeightInKg" />
+                            <ValidationMessage For="@(() => item.WeightInKg)" />
+                        </div>
+                        <div class="mb-3">
+                            <label>Quantity</label>
+                            <InputNumber class="form-control" @bind-Value="item.Quantity" />
+                            <ValidationMessage For="@(() => item.Quantity)" />
+                        </div>
+                        <button type="button" class="btn btn-danger" @onclick="() => RemoveOrderItem(item)">Remove Item</button>
+                    </div>
+                }
+                <button type="button" class="btn btn-secondary mb-3" @onclick="AddOrderItem">Add Order Item</button>
+   
+                <br />
+                <button type="submit" class="btn btn-primary">Update Order</button>
+            </EditForm>
+        }
+   
+           @code {
+       [Parameter]
+       public Guid OrderId { get; set; }
+   
+       private UpdateOrderDto? _order;
+   
+       protected override async Task OnInitializedAsync()
+       {
+           var existingOrderDto = await OrderService.GetOrderByIdAsync(OrderId);
+   
+           if (existingOrderDto != null)
+           {
+               _order = new UpdateOrderDto
+               {
+                   OrderId = existingOrderDto.Id,
+                   CustomerName = existingOrderDto.CustomerName,
+                   MailAddress = existingOrderDto.MailAddress,
+                   PhoneNumber = existingOrderDto.PhoneNumber,
+                   PickUpLocation = existingOrderDto.PickUpLocation,
+                   DestinationLocation = existingOrderDto.DestinationLocation,
+                   // Use UpdateOrderItemDto here
+                   Items = existingOrderDto.OrderItems.Select(oi => new UpdateOrderItemDto
+                   {
+                       Description = oi.Description,
+                       WeightInKg = oi.WeightInKg,
+                       Quantity = oi.Quantity
+                   }).ToList()
+               };
+           }
+       }
+   
+       private async Task HandleUpdateOrder()
+       {
+           if (_order != null)
+           {
+               await OrderService.UpdateOrderAsync(_order);
+               NavigationManager.NavigateTo($"/orders/{_order.OrderId}");
+           }
+       }
+   
+       private void AddOrderItem()
+       {
+           if (_order != null)
+           {
+               // Add an UpdateOrderItemDto
+               _order.Items.Add(new UpdateOrderItemDto { Description = "", WeightInKg = 0, Quantity = 0 });
+           }
+       }
+   
+       private void RemoveOrderItem(UpdateOrderItemDto itemToRemove) // The parameter is now UpdateOrderItemDto
+       {
+           if (_order != null)
+           {
+               _order.Items.Remove(itemToRemove);
+           }
+       }
+   }

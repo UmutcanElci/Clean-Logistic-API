@@ -4,9 +4,11 @@
         @inject OrderService OrderService
         @inject IJSRuntime JsRuntime
         @inject NavigationManager NavigationManager
+        @rendermode InteractiveServer
 
         <h3>Order Details</h3>
    <button class="btn btn-danger" @onclick="HandleDeleteOrder">Delete Order</button>
+<button class="btn btn-secondary" @onclick="NavigateToEdit">Edit Order</button>
         @if (_order == null)
         {
             <p><em>Loading or Order not found...</em></p>
@@ -68,11 +70,17 @@
    
         private async Task HandleDeleteOrder()
         {
-            bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete this order?");
-            if (confirmed)
-            {
-                await OrderService.DeleteOrderAsync(OrderId);
-                NavigationManager.NavigateTo("/orders"); 
-            }
+           
+        bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete this order?");
+        if (confirmed)
+        {
+            await OrderService.DeleteOrderAsync(OrderId);
+            NavigationManager.NavigateTo("/orders");
+        
+        }
+        }
+        private void NavigateToEdit()
+        {
+            NavigationManager.NavigateTo($"/orders/update/{OrderId}");
         }
         }
