@@ -3,6 +3,7 @@
 @using Logistics.Application.Services
 @inject OrderService OrderService
 @using Logistics.Web/Components/Pages/Orders.razor
+
 <h3>Orders</h3>
  <a href="/orders/create" class="btn btn-primary mb-3">Create New Order</a>
 @if (_orders == null){
@@ -20,7 +21,7 @@
     <tbody>
     @foreach(var order in _orders){
       <tr>
-      <td>@order.Id</td>
+      <td><a href="/orders/@order.Id">@order.Id</a></td>
       <td>@order.CustomerName</td>
       <td>@order.Status</td>
       <td>@order.DestinationLocation.City, @order.DestinationLocation.Country</td>
