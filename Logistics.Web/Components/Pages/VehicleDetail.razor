@@ -1,0 +1,65 @@
+    @page "/vehicles/{VehicleId:guid}"
+        @rendermode InteractiveServer
+        @using Logistics.Application.DTOs
+        @using Logistics.Application.Services
+        @inject VehicleService VehicleService
+        @inject NavigationManager NavigationManager
+        @inject IJSRuntime JsRuntime
+   
+        <h3>Vehicle Details</h3>
+        @if (_vehicle == null)
+        {
+            <p><em>Loading or Vehicle not found...</em></p>
+        }
+        else
+        {
+            <div class="mb-3">
+                <a href="/vehicles/update/@VehicleId" class="btn btn-secondary">Edit Vehicle</a>
+                <button class="btn btn-danger" @onclick="HandleDeleteVehicle">Delete Vehicle</button>
+            </div>
+   
+            <h4>Details</h4>
+            <p><strong>ID:</strong> @_vehicle.Id</p>
+            <p><strong>License Plate:</strong> @_vehicle.LicensePlate</p>
+            <p><strong>Type:</strong> @_vehicle.Type</p>
+            <p><strong>Status:</strong> @_vehicle.Status</p>
+   
+            <hr />
+   
+            <h4>Specifications</h4>
+            <p><strong>Max Weight:</strong> @_vehicle.MaxWeightInKg Kg</p>
+            <p><strong>Max Volume:</strong> @_vehicle.MaxVolumeInCubicMeters m³</p>
+            <p><strong>Max Speed:</strong> @_vehicle.MaxSpeedInKph kph</p>
+            <p><strong>Can Go Abroad:</strong> @_vehicle.CanGoAbroad</p>
+   
+            <hr />
+   
+            @if (_vehicle.CurrentLocation != null)
+            {
+                <h4>Current Location</h4>
+                <p>@_vehicle.CurrentLocation.StreetAddress, @_vehicle.CurrentLocation.City, @_vehicle.CurrentLocation.PostalCode, @_vehicle.CurrentLocation.Country</p>
+            }
+        }
+   
+        @code {
+            [Parameter]
+            public Guid VehicleId { get; set; }
+   
+            private VehicleDto? _vehicle;
+   
+            protected override async Task OnInitializedAsync()
+            {
+                _vehicle = await VehicleService.GetVehicleByIdAsync(VehicleId);
+            }
+   
+            private async Task HandleDeleteVehicle()
+            {
+                bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete this vehicle?");
+                if (confirmed)
+                {
+                    await VehicleService.DeleteVehicleAsync(VehicleId);
+                    NavigationManager.NavigateTo("/vehicles"); 
+                }
+            }
+
+        }

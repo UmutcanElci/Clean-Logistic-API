@@ -1,0 +1,75 @@
+     @page "/vehicles/create"
+        @rendermode InteractiveServer
+        @using Logistics.Application.DTOs
+        @using Logistics.Application.Services
+        @using Logistics.Domain.common
+        @inject VehicleService VehicleService
+        @inject NavigationManager NavigationManager
+   
+        <h3>Create New Vehicle</h3>
+   
+        <EditForm Model="@_vehicle" OnValidSubmit="HandleCreateVehicle" FormName="create-vehicle-form">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+   
+            <div class="mb-3">
+                <label for="licensePlate" class="form-label">License Plate</label>
+                <InputText id="licensePlate" class="form-control" @bind-Value="_vehicle.LicensePlate" />
+                <ValidationMessage For="@(() => _vehicle.LicensePlate)" />
+            </div>
+   
+            <div class="mb-3">
+                <label for="type" class="form-label">Vehicle Type</label>
+                <InputSelect id="type" class="form-select" @bind-Value="_vehicle.Type">
+                    @foreach (var vehicleType in Enum.GetValues(typeof(VehicleType)))
+                    {
+                        <option value="@vehicleType">@vehicleType</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => _vehicle.Type)" />
+            </div>
+   
+            <div class="mb-3">
+                <label for="maxWeight" class="form-label">Max Weight (Kg)</label>
+                <InputNumber id="maxWeight" class="form-control" @bind-Value="_vehicle.MaxWeightInKg" />
+                <ValidationMessage For="@(() => _vehicle.MaxWeightInKg)" />
+            </div>
+   
+            <div class="mb-3">
+                <label for="maxVolume" class="form-label">Max Volume (Cubic Meters)</label>
+                <InputNumber id="maxVolume" class="form-control" @bind-Value="_vehicle.MaxVolumeInCubicMeters" />
+                <ValidationMessage For="@(() => _vehicle.MaxVolumeInCubicMeters)" />
+            </div>
+   
+            <div class="mb-3">
+                <label for="maxSpeed" class="form-label">Max Speed (Kph)</label>
+                <InputNumber id="maxSpeed" class="form-control" @bind-Value="_vehicle.MaxSpeedInKph" />
+                <ValidationMessage For="@(() => _vehicle.MaxSpeedInKph)" />
+            </div>
+   
+            <div class="mb-3 form-check">
+                <InputCheckbox id="canGoAbroad" class="form-check-input" @bind-Value="_vehicle.CanGoAbroad" />
+                <label for="canGoAbroad" class="form-check-label">Can Go Abroad</label>
+            </div>
+   
+   
+            <button type="submit" class="btn btn-primary">Create Vehicle</button>
+        </EditForm>
+   
+        @code {
+             private CreateVehicleDto _vehicle = new()
+        {
+        LicensePlate = "",
+        Type = VehicleType.Truck,
+        MaxWeightInKg = 0,
+        MaxVolumeInCubicMeters = 0,
+        MaxSpeedInKph = 0,
+        CanGoAbroad = false
+        };
+   
+            private async Task HandleCreateVehicle()
+            {
+                await VehicleService.CreateVehicleAsync(_vehicle);
+                NavigationManager.NavigateTo("/vehicles");
+            }
+        }

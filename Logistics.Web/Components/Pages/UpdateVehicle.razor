@@ -1,0 +1,100 @@
+  @page "/vehicles/update/{VehicleId:guid}"
+        @rendermode InteractiveServer
+        @using Logistics.Application.DTOs
+        @using Logistics.Application.Services
+        @using Logistics.Domain.common
+        @inject VehicleService VehicleService
+        @inject NavigationManager NavigationManager
+   
+        <h3>Update Vehicle</h3>
+   
+        @if (_vehicle == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <EditForm Model="@_vehicle" OnValidSubmit="HandleUpdateVehicle" FormName="update-vehicle-form">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                   
+                <div class="mb-3">
+                <label for="licensePlate" class="form-label">License Plate</label>
+                <InputText id="licensePlate" class="form-control" @bind-Value="_vehicle.LicensePlate" />
+                <ValidationMessage For="@(() => _vehicle.LicensePlate)" />
+            </div>
+   
+            <div class="mb-3">
+                <label for="type" class="form-label">Vehicle Type</label>
+                <InputSelect id="type" class="form-select" @bind-Value="_vehicle.Type">
+                    @foreach (var vehicleType in Enum.GetValues(typeof(VehicleType)))
+                    {
+                        <option value="@vehicleType">@vehicleType</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => _vehicle.Type)" />
+            </div>
+   
+            <div class="mb-3">
+                <label for="maxWeight" class="form-label">Max Weight (Kg)</label>
+                <InputNumber id="maxWeight" class="form-control" @bind-Value="_vehicle.MaxWeightInKg" />
+                <ValidationMessage For="@(() => _vehicle.MaxWeightInKg)" />
+            </div>
+   
+            <div class="mb-3">
+                <label for="maxVolume" class="form-label">Max Volume (Cubic Meters)</label>
+                <InputNumber id="maxVolume" class="form-control" @bind-Value="_vehicle.MaxVolumeInCubicMeters" />
+                <ValidationMessage For="@(() => _vehicle.MaxVolumeInCubicMeters)" />
+            </div>
+   
+            <div class="mb-3">
+                <label for="maxSpeed" class="form-label">Max Speed (Kph)</label>
+                <InputNumber id="maxSpeed" class="form-control" @bind-Value="_vehicle.MaxSpeedInKph" />
+                <ValidationMessage For="@(() => _vehicle.MaxSpeedInKph)" />
+            </div>
+   
+            <div class="mb-3 form-check">
+                <InputCheckbox id="canGoAbroad" class="form-check-input" @bind-Value="_vehicle.CanGoAbroad" />
+                <label for="canGoAbroad" class="form-check-label">Can Go Abroad</label>
+            </div>
+
+                <button type="submit" class="btn btn-primary">Update Vehicle</button>
+            </EditForm>
+        }
+   
+        @code {
+            [Parameter]
+            public Guid VehicleId { get; set; }
+   
+            private UpdateVehicleDto? _vehicle;
+   
+            protected override async Task OnInitializedAsync()
+            {
+                var existingVehicleDto = await VehicleService.GetVehicleByIdAsync(VehicleId);
+   
+                if (existingVehicleDto != null)
+                {
+                    _vehicle = new UpdateVehicleDto
+                    {
+                        Id = existingVehicleDto.Id,
+                        LicensePlate = existingVehicleDto.LicensePlate,
+                        Type = existingVehicleDto.Type,
+                        MaxWeightInKg = existingVehicleDto.MaxWeightInKg,
+                        MaxVolumeInCubicMeters = existingVehicleDto.MaxVolumeInCubicMeters,
+                        CanGoAbroad = existingVehicleDto.CanGoAbroad,
+                        MaxSpeedInKph = existingVehicleDto.MaxSpeedInKph,
+                        CurrentLocation = existingVehicleDto.CurrentLocation,
+                        Status = existingVehicleDto.Status
+                    };
+                }
+            }
+   
+            private async Task HandleUpdateVehicle()
+            {
+                if (_vehicle != null)
+                {
+                    await VehicleService.UpdateVehicleAsync(_vehicle);
+                    NavigationManager.NavigateTo($"/vehicles/{_vehicle.Id}"); 
+                }
+            }
+        }
