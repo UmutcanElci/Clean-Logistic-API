@@ -42,6 +42,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9DcmVhdGVPcmRlci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/umutcan/Work/LogisticC-/Logistics.Web/Components/Pages/CreateVehicle.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9DcmVhdGVWZWhpY2xlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/umutcan/Work/LogisticC-/Logistics.Web/Components/Pages/Error.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9FcnJvci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
@@ -64,6 +68,14 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/home/umutcan/Work/LogisticC-/Logistics.Web/Components/Pages/UpadateOrder.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9VcGFkYXRlT3JkZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/umutcan/Work/LogisticC-/Logistics.Web/Components/Pages/UpdateVehicle.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9VcGRhdGVWZWhpY2xlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/umutcan/Work/LogisticC-/Logistics.Web/Components/Pages/VehicleDetail.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9WZWhpY2xlRGV0YWlsLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/umutcan/Work/LogisticC-/Logistics.Web/Components/Pages/Vehicles.razor]

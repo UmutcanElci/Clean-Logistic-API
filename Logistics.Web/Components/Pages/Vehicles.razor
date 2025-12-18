@@ -1,0 +1,47 @@
+    @page "/vehicles"
+    @rendermode InteractiveServer
+    @using Logistics.Application.DTOs
+    @using Logistics.Application.Services
+    @inject VehicleService VehicleService
+
+
+   <a href="/vehicles/create" class="btn btn-primary mb-3">Create New Vehicle</a>
+    <h3>Vehicles</h3>
+   
+    @if (_vehicles == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Vehicle ID</th>
+                    <th>License Plate</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var vehicle in _vehicles)
+                {
+                    <tr>
+                       <td><a href="/vehicles/@vehicle.Id">@vehicle.Id</a></td>
+                        <td>@vehicle.LicensePlate</td>
+                        <td>@vehicle.Type</td>
+                        <td>@vehicle.Status</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+   
+    @code {
+        private IReadOnlyList<VehicleDto>? _vehicles;
+   
+        protected override async Task OnInitializedAsync()
+        {
+            _vehicles = await VehicleService.GetAllVehiclesAsync();
+        }
+    }
