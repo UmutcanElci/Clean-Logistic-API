@@ -1,0 +1,63 @@
+    @page "/warehouses/create"
+    @rendermode InteractiveServer
+    @using Logistics.Application.DTOs
+    @using Logistics.Application.Services
+    @using Logistics.Domain.common
+    @inject WarehouseService WarehouseService
+    @inject NavigationManager NavigationManager
+   
+    <h3>Create New Warehouse</h3>
+   
+    <EditForm Model="@_warehouse" OnValidSubmit="HandleCreateWarehouse" FormName="create-warehouse-form">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+   
+        <div class="mb-3">
+            <label for="name" class="form-label">Warehouse Name</label>
+            <InputText id="name" class="form-control" @bind-Value="_warehouse.Name" />
+            <ValidationMessage For="@(() => _warehouse.Name)" />
+        </div>
+   
+        <div class="mb-3">
+            <label for="type" class="form-label">Storage Type</label>
+            <InputSelect id="type" class="form-select" @bind-Value="_warehouse.Type">
+                @foreach (var storageType in Enum.GetValues(typeof(StorageType)))
+                {
+                    <option value="@storageType">@storageType</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => _warehouse.Type)" />
+        </div>
+   
+        <div class="mb-3">
+            <label for="maxCapacity" class="form-label">Max Capacity</label>
+            <InputNumber id="maxCapacity" class="form-control" @bind-Value="_warehouse.MaxCapacity" />
+            <ValidationMessage For="@(() => _warehouse.MaxCapacity)" />
+        </div>
+   
+        <h4>Address</h4>
+        <div class="mb-3">
+            <label for="street" class="form-label">Street Address</label>
+            <InputText id="street" class="form-control" @bind-Value="_warehouse.Address.StreetAddress" />
+            <ValidationMessage For="@(() => _warehouse.Address.StreetAddress)" />
+        </div>
+   
+   
+        <button type="submit" class="btn btn-primary">Create Warehouse</button>
+    </EditForm>
+   
+    @code {
+        private CreateWarehouseDto _warehouse = new()
+        {
+            Name = "",
+            Type = StorageType.DryGoods,
+            MaxCapacity = 0,
+            Address = new LocationDto { StreetAddress = "", City = "", PostalCode = 0, Country = "" }
+        };
+   
+        private async Task HandleCreateWarehouse()
+        {
+            await WarehouseService.CreateWarehouseAsync(_warehouse);
+            NavigationManager.NavigateTo("/warehouses");
+        }
+    }
