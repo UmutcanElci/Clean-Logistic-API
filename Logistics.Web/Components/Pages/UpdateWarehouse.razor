@@ -1,0 +1,73 @@
+    @page "/warehouses/update/{WarehouseId:guid}"
+    @rendermode InteractiveServer
+    @using Logistics.Application.DTOs
+    @using Logistics.Application.Services
+    @inject WarehouseService WarehouseService
+    @inject NavigationManager NavigationManager
+   
+    <h3>Update Warehouse</h3>
+   
+    @if (_warehouse == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <EditForm Model="@_warehouse" OnValidSubmit="HandleUpdateWarehouse" FormName="update-warehouse-form">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+         <div class="mb-3">
+            <label for="name" class="form-label">Warehouse Name</label>
+            <InputText id="name" class="form-control" @bind-Value="_warehouse.Name" />
+            <ValidationMessage For="@(() => _warehouse.Name)" />
+        </div>
+   
+           <div class="mb-3">
+            <label for="maxCapacity" class="form-label">Max Capacity</label>
+            <InputNumber id="maxCapacity" class="form-control" @bind-Value="_warehouse.MaxCapacity" />
+            <ValidationMessage For="@(() => _warehouse.MaxCapacity)" />
+        </div>
+   
+        <h4>Address</h4>
+        <div class="mb-3">
+            <label for="street" class="form-label">Street Address</label>
+            <InputText id="street" class="form-control" @bind-Value="_warehouse.Address.StreetAddress" />
+            <ValidationMessage For="@(() => _warehouse.Address.StreetAddress)" />
+        </div>
+   
+   
+            <button type="submit" class="btn btn-primary">Update Warehouse</button>
+        </EditForm>
+    }
+   
+    @code {
+        [Parameter]
+        public Guid WarehouseId { get; set; }
+   
+        private UpdateWarehouseDto? _warehouse;
+   
+        protected override async Task OnInitializedAsync()
+        {
+            var existingDto = await WarehouseService.GetWarehouseByIdAsync(WarehouseId);
+            if (existingDto != null)
+            {
+                _warehouse = new UpdateWarehouseDto
+                {
+                    Id = existingDto.Id,
+                    Name = existingDto.Name,
+                    MaxCapacity = existingDto.MaxCapacity,
+                    Type = existingDto.Type,
+                    Address = existingDto.Address
+                };
+            }
+        }
+   
+        private async Task HandleUpdateWarehouse()
+        {
+            if (_warehouse != null)
+            {
+                await WarehouseService.UpdateWarehouseAsync(_warehouse);
+                NavigationManager.NavigateTo($"/warehouses/{_warehouse.Id}");
+            }
+        }
+    }

@@ -1,0 +1,47 @@
+    @page "/warehouses"
+    @rendermode InteractiveServer
+    @using Logistics.Application.DTOs
+    @using Logistics.Application.Services
+    @inject WarehouseService WarehouseService
+   
+    <h3>Warehouses</h3>
+   
+    <a href="/warehouses/create" class="btn btn-primary mb-3">Create New Warehouse</a>
+   
+    @if (_warehouses == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Warehouse ID</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Capacity</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var warehouse in _warehouses)
+                {
+                    <tr>
+                        <td><a href="/warehouses/@warehouse.Id">@warehouse.Id</a></td>
+                        <td>@warehouse.Name</td>
+                        <td>@warehouse.Type</td>
+                        <td>@warehouse.MaxCapacity</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+   
+    @code {
+        private IReadOnlyList<WarehouseDto>? _warehouses;
+   
+        protected override async Task OnInitializedAsync()
+        {
+            _warehouses = await WarehouseService.GetAllWarehousesAsync();
+        }
+    }

@@ -12,18 +12,39 @@ public class Hub
     {
 
     }
-    public Route CreateRouteForOrder(Order order, Vehicle assignedvehicle)
+    public Route CreateRouteForOrder(Order order, IReadOnlyList<Vehicle> availableVehicles)
     {
-        return new Route
+        var totalWeight = order.OrderItems.Sum(item => item.WeightInKg * item.Quantity);
+
+        var suitableVehicles = availableVehicles.Where(v =>
+            v.Status == VehicleStatus.Idle &&
+            v.MaxWeightInKg >= totalWeight
+        ).ToList();
+
+        var bestVehicle = suitableVehicles.FirstOrDefault();
+
+        if (bestVehicle == null)
+        {
+            throw new InvalidOperationException("No suitable vehicle available for this order.");
+        }
+
+        var stops = new List<Location>
+            {
+                order.PickUpLocation,
+                order.DestinationLocation
+            };
+
+        var newRoute = new Route
         {
             Id = Guid.NewGuid(),
             OrderId = order.Id,
             Order = order,
-            AssignVehicle = assignedvehicle,
+            AssignVehicle = bestVehicle,
             Status = RouteStatus.Planned,
-            Stops = new List<Location>()
+            Stops = stops
         };
-    }
 
+        return newRoute;
+    }
 
 }

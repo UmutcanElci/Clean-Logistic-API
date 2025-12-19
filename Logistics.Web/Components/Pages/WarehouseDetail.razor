@@ -1,0 +1,51 @@
+    @page "/warehouses/{WarehouseId:guid}"
+    @rendermode InteractiveServer
+    @using Logistics.Application.DTOs
+    @using Logistics.Application.Services
+    @inject WarehouseService WarehouseService
+    @inject NavigationManager NavigationManager
+    @inject IJSRuntime JsRuntime
+   
+    <h3>Warehouse Details</h3>
+   
+    @if (_warehouse == null)
+    {
+        <p><em>Loading or Warehouse not found...</em></p>
+    }
+    else
+    {
+        <div class="mb-3">
+            <a href="/warehouses/update/@WarehouseId" class="btn btn-secondary">Edit Warehouse</a>
+            <button class="btn btn-danger" @onclick="HandleDeleteWarehouse">Delete Warehouse</button>
+        </div>
+   
+        <p><strong>ID:</strong> @_warehouse.Id</p>
+        <p><strong>Name:</strong> @_warehouse.Name</p>
+        <p><strong>Type:</strong> @_warehouse.Type</p>
+        <p><strong>Max Capacity:</strong> @_warehouse.MaxCapacity</p>
+   
+        <h4>Address</h4>
+        <p>@_warehouse.Address.StreetAddress, @_warehouse.Address.City, @_warehouse.Address.PostalCode, @_warehouse.Address.Country</p>
+    }
+   
+    @code {
+        [Parameter]
+        public Guid WarehouseId { get; set; }
+   
+        private WarehouseDto? _warehouse;
+   
+        protected override async Task OnInitializedAsync()
+        {
+            _warehouse = await WarehouseService.GetWarehouseByIdAsync(WarehouseId);
+        }
+   
+        private async Task HandleDeleteWarehouse()
+        {
+            bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete this warehouse?");
+            if (confirmed)
+            {
+                await WarehouseService.DeleteWarehouseAsync(WarehouseId);
+                NavigationManager.NavigateTo("/warehouses");
+            }
+        }
+    }

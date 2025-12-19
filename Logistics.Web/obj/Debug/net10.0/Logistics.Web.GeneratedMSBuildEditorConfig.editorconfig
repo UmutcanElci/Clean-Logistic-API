@@ -46,6 +46,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9DcmVhdGVWZWhpY2xlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/umutcan/Work/LogisticC-/Logistics.Web/Components/Pages/CreateWarehouse.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9DcmVhdGVXYXJlaG91c2UucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/umutcan/Work/LogisticC-/Logistics.Web/Components/Pages/Error.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9FcnJvci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
@@ -74,12 +78,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9VcGRhdGVWZWhpY2xlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/umutcan/Work/LogisticC-/Logistics.Web/Components/Pages/UpdateWarehouse.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9VcGRhdGVXYXJlaG91c2UucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/umutcan/Work/LogisticC-/Logistics.Web/Components/Pages/VehicleDetail.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9WZWhpY2xlRGV0YWlsLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/umutcan/Work/LogisticC-/Logistics.Web/Components/Pages/Vehicles.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9WZWhpY2xlcy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/umutcan/Work/LogisticC-/Logistics.Web/Components/Pages/WarehouseDetail.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9XYXJlaG91c2VEZXRhaWwucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/umutcan/Work/LogisticC-/Logistics.Web/Components/Pages/Warehouses.razor]
