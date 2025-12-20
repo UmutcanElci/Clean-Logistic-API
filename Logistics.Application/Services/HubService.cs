@@ -3,6 +3,8 @@ namespace Logistics.Application.Services;
 using Logistics.Application.Interfaces;
 using Logistics.Application.DTOs;
 using Logistics.Application.Mappers;
+using Logistics.Domain.common;
+using System.Linq;
 
 public class HubService
 {
@@ -24,7 +26,7 @@ public class HubService
         var order = await _orderRepository.GetByIdAsync(orderId);
         if (order == null)
         {
-            throw new ArgumentException($"Order with ID {orderId} mor found.");
+            throw new ArgumentException($"Order with ID {orderId} not found.");
         }
 
         var hub = await _hubRepository.GetHubAsync();
@@ -34,18 +36,15 @@ public class HubService
         }
 
         var vehicles = await _vehicleRepository.GetAllAsync();
-        if (vehicles == null)
+        if (vehicles == null || !vehicles.Any())
         {
-            throw new InvalidOperationException("No available vehicles found to assign to the route.");
+            throw new InvalidOperationException("No vehicles found in the system.");
         }
 
-        var assignVehicle = vehicles.First();
 
-        var newRoute = hub.CreateRouteForOrder(order, assignVehicle);
+        var newRoute = hub.CreateRouteForOrder(order, vehicles);
 
         var createdRoute = await _routeRepository.CreateAsync(newRoute);
-
         return createdRoute.ToDto();
     }
-
 }

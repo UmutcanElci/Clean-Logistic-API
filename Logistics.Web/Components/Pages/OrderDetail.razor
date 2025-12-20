@@ -5,10 +5,13 @@
         @inject IJSRuntime JsRuntime
         @inject NavigationManager NavigationManager
         @rendermode InteractiveServer
+        @inject HubService HubService
+
 
         <h3>Order Details</h3>
    <button class="btn btn-danger" @onclick="HandleDeleteOrder">Delete Order</button>
 <button class="btn btn-secondary" @onclick="NavigateToEdit">Edit Order</button>
+<button class="btn btn-success" @onclick="HandleGenerateRoute">Generate Route</button>
         @if (_order == null)
         {
             <p><em>Loading or Order not found...</em></p>
@@ -82,5 +85,20 @@
         private void NavigateToEdit()
         {
             NavigationManager.NavigateTo($"/orders/update/{OrderId}");
+        }
+
+         private async Task HandleGenerateRoute()
+        {
+            try
+            {
+                var generatedRoute = await HubService.GenerateRouteForOrderAsync(OrderId);
+                // After the route is generated, navigate to the route's detail page
+                NavigationManager.NavigateTo($"/routes/{generatedRoute.Id}");
+            }
+            catch (Exception ex)
+            {
+                // For now, let's show an alert if route generation fails
+                await JsRuntime.InvokeVoidAsync("alert", $"Route generation failed: {ex.Message}");
+            }
         }
         }

@@ -16,23 +16,35 @@ public class Hub
     {
         var totalWeight = order.OrderItems.Sum(item => item.WeightInKg * item.Quantity);
 
-        var suitableVehicles = availableVehicles.Where(v =>
+        var bestVehicle = availableVehicles.FirstOrDefault(v =>
             v.Status == VehicleStatus.Idle &&
-            v.MaxWeightInKg >= totalWeight
-        ).ToList();
-
-        var bestVehicle = suitableVehicles.FirstOrDefault();
+            v.MaxWeightInKg >= totalWeight);
 
         if (bestVehicle == null)
         {
             throw new InvalidOperationException("No suitable vehicle available for this order.");
         }
 
-        var stops = new List<Location>
-            {
-                order.PickUpLocation,
-                order.DestinationLocation
-            };
+
+        var stopsList = new List<Location>
+    {
+        new Location
+        {
+            StreetAddress = order.PickUpLocation.StreetAddress,
+            City = order.PickUpLocation.City,
+            PostalCode = order.PickUpLocation.PostalCode,
+            Country = order.PickUpLocation.Country,
+            GpsCoordinates = new Coordinates(order.PickUpLocation.GpsCoordinates.Latitude, order.PickUpLocation.GpsCoordinates.Longitude)
+        },
+        new Location
+        {
+            StreetAddress = order.DestinationLocation.StreetAddress,
+            City = order.DestinationLocation.City,
+            PostalCode = order.DestinationLocation.PostalCode,
+            Country = order.DestinationLocation.Country,
+            GpsCoordinates = new Coordinates(order.DestinationLocation.GpsCoordinates.Latitude, order.DestinationLocation.GpsCoordinates.Longitude)
+        }
+    };
 
         var newRoute = new Route
         {
@@ -41,10 +53,9 @@ public class Hub
             Order = order,
             AssignVehicle = bestVehicle,
             Status = RouteStatus.Planned,
-            Stops = stops
+            Stops = stopsList
         };
 
         return newRoute;
     }
-
 }

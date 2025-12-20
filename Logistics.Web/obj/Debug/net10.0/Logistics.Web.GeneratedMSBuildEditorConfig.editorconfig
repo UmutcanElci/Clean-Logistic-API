@@ -70,6 +70,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9PcmRlcnMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/umutcan/Work/LogisticC-/Logistics.Web/Components/Pages/RouteDetail.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9Sb3V0ZURldGFpbC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/umutcan/Work/LogisticC-/Logistics.Web/Components/Pages/UpadateOrder.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9VcGFkYXRlT3JkZXIucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
