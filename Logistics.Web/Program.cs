@@ -28,6 +28,8 @@ builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<VehicleService>();
 builder.Services.AddScoped<WarehouseService>();
 builder.Services.AddScoped<HubService>();
+builder.Services.AddHttpClient<IGeocodingService, NominatimGeocodingService>();
+builder.Services.AddScoped<RouteService>();
 
 builder.Services.AddControllers();
 
