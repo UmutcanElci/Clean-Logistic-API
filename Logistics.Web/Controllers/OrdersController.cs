@@ -39,7 +39,7 @@ public class OrdersController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllOrders()
     {
-        var orders = await _service.GetAllOrderAsync();
+        var orders = await _service.GetAllOrdersAsync();
 
         return Ok(orders);
     }
