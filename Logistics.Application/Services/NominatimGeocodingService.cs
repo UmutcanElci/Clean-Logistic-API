@@ -36,10 +36,6 @@ public class NominatimGeocodingService : IGeocodingService
         return new Coordinates(0.0, 0.0);
     }
 
-    Task<Coordinates> IGeocodingService.GetCoordinatesFromAddressAsync(string street, string city, string country, string postalCode)
-    {
-        throw new NotImplementedException();
-    }
 
     private class NominatimResult
     {

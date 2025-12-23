@@ -9,14 +9,28 @@ namespace Logistics.Application.Services;
 public class OrderService
 {
     private readonly IOrderRepository _repository;
+    private readonly IGeocodingService _geocodingService;
 
-    public OrderService(IOrderRepository repository)
+    public OrderService(IOrderRepository repository, IGeocodingService geocodingService)
     {
         _repository = repository;
+        _geocodingService = geocodingService;
     }
 
     public async Task<OrderDto> CreateOrderAsync(CreateOrderDto createOrderDto)
     {
+        var pickupCoords = await _geocodingService.GetCoordinatesFromAddressAsync(
+            createOrderDto.PickUpLocation.StreetAddress,
+            createOrderDto.PickUpLocation.City,
+            createOrderDto.PickUpLocation.Country,
+            createOrderDto.PickUpLocation.PostalCode.ToString());
+
+        var destCoords = await _geocodingService.GetCoordinatesFromAddressAsync(
+            createOrderDto.DestinationLocation.StreetAddress,
+            createOrderDto.DestinationLocation.City,
+            createOrderDto.DestinationLocation.Country,
+            createOrderDto.DestinationLocation.PostalCode.ToString());
+
         var order = new Order
         {
             Id = Guid.NewGuid(),
@@ -29,7 +43,7 @@ public class OrderService
                 City = createOrderDto.PickUpLocation.City,
                 PostalCode = createOrderDto.PickUpLocation.PostalCode,
                 Country = createOrderDto.PickUpLocation.Country,
-                GpsCoordinates = new Coordinates(0.0, 0.0)
+                GpsCoordinates = pickupCoords
             },
             DestinationLocation = new Location
             {
@@ -37,7 +51,7 @@ public class OrderService
                 City = createOrderDto.DestinationLocation.City,
                 PostalCode = createOrderDto.DestinationLocation.PostalCode,
                 Country = createOrderDto.DestinationLocation.Country,
-                GpsCoordinates = new Coordinates(0.0, 0.0)
+                GpsCoordinates = destCoords
             },
             OrderItems = createOrderDto.Items.Select(item => new OrderItem
             {
@@ -63,7 +77,7 @@ public class OrderService
         return order.ToDto();
     }
 
-    public async Task<IReadOnlyList<OrderDto>> GetAllOrderAsync()
+    public async Task<IReadOnlyList<OrderDto>> GetAllOrdersAsync()
     {
         var orders = await _repository.GetAllAsync();
 
@@ -101,9 +115,6 @@ public class OrderService
             Country = updateOrderDto.DestinationLocation.Country,
             GpsCoordinates = new Coordinates(0.0, 0.0)
         };
-
-
-
 
         existingOrder.OrderItems.Clear();
         foreach (var itemDto in updateOrderDto.Items)

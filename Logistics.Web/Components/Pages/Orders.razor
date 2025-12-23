@@ -34,7 +34,7 @@
     @code{
         private IReadOnlyList<OrderDto>? _orders;
         protected override async Task OnInitializedAsync(){
-            _orders = await OrderService.GetAllOrderAsync();
+            _orders = await OrderService.GetAllOrdersAsync();
           }
       }
 
